@@ -13,3 +13,6 @@ The likelihood of being banned with this software is VERY low, since this applic
 If you are banned while using this application, please raise it in the issues section since I will look into what caused it.
 
 I have been using this application while playing CS 2 and Apex Legends and other live service games and I haven't seen any issues yet.
+
+### Design
+![Menu Design!](/ALR_Images/Menu.png "ALR Menu Design")
