@@ -18,6 +18,6 @@ I have been using this application while playing CS 2 and Apex Legends and other
 ![Menu Design!](/ALR_Images/Menu.png "ALR Menu Design")
 
 ### Pre-compiled Binaries
-There are pre-compiled binaries in the releases section but if you want to build it yourself then all the files that are needed are within ALR_build folder.
+There are pre-compiled binaries in the releases section but if you want to build it yourself then all the files that are needed are within ALR_build folder. They aren't signed so you will get some anti-viruses flagging it as malware.
 
 I also forgot which packages I am using that are custom. Giga brain.
