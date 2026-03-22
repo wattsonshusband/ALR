@@ -166,8 +166,15 @@ class ResolutionChanger:
         self.remove_btn.after(1000, lambda: self.refresh_remove_btn())
 
     def refresh_process_list(self):
+        loaded_procesess = self.load_processes()
+        # Check for any difference between current processes and loaded processes.
+        
+        if loaded_procesess == self.all_open_processes:
+            self.process_selector.after(2500, lambda: self.refresh_process_list())
+            return
+        
         self.all_open_processes.clear()
-        self.load_processes()
+        self.all_open_processes = loaded_procesess
 
         self.process_selector.configure(values=list(self.all_open_processes.values()))
 
@@ -180,6 +187,11 @@ class ResolutionChanger:
             self.x_var.set(w)
             self.y_var.set(h)
             self.rr_var.set(rr)
+        else:
+            self.process_selector.set('Select a process')
+            self.x_var.set(1920)
+            self.y_var.set(1080)
+            self.rr_var.set(60)
 
         self.process_selector.after(2500, lambda: self.refresh_process_list())
 
@@ -199,6 +211,7 @@ class ResolutionChanger:
 
     def load_processes(self):
         """Returns a dictionary of all open processes."""
+        open_processes = {}
         for proc in psutil.process_iter(['name', 'exe']):
             try:
                 if any(keyword.lower() in proc.exe().lower() for keyword in GAME_PATH_KEYWORDS):
@@ -213,10 +226,12 @@ class ResolutionChanger:
                     except (AttributeError):
                         display_name = name.replace('.exe', '')
 
-                    if name not in list(self.all_open_processes.keys()):
-                        self.all_open_processes.update({ name: display_name })
+                    if name not in list(open_processes.keys()):
+                        open_processes.update({ name: display_name })
             except (psutil.AccessDenied, psutil.NoSuchProcess):
                 continue
+            
+        return open_processes
 
     def header_colour(self):
         version = getwindowsversion()
@@ -403,6 +418,13 @@ class ResolutionChanger:
 
         if DISABLED in self.remove_btn.state():
             self.remove_btn.config(state=NORMAL)
+            
+        self.process_selector.set(self.validated_process.replace('.exe', ''))
+            
+        if self.process_selector.state() == DISABLED:
+            self.process_selector.config(state='readonly')
+        else:
+            self.process_selector.config(state=DISABLED)
 
         process_resolution = self.game_settings_data[self.validated_process]
         w, h, rr = process_resolution['width'], process_resolution['height'], process_resolution['refresh_rate']
@@ -427,6 +449,8 @@ class ResolutionChanger:
             elif not self.is_valid_process_running and self.has_changed_res:
                 if not self.set_resolution(self.old_res['width'], self.old_res['height'], self.old_res['refresh_rate']):
                     raise r_error('Failed to reset resolution.')
+                
+                self.process_selector.config(state='readonly')
                 
                 self.has_changed_res = False
             elif self.is_valid_process_running and self.has_changed_res:
