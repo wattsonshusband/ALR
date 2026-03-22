@@ -420,11 +420,7 @@ class ResolutionChanger:
             self.remove_btn.config(state=NORMAL)
             
         self.process_selector.set(self.validated_process.replace('.exe', ''))
-            
-        if self.process_selector.state() == DISABLED:
-            self.process_selector.config(state='readonly')
-        else:
-            self.process_selector.config(state=DISABLED)
+        self.process_selector.config(state=DISABLED)
 
         process_resolution = self.game_settings_data[self.validated_process]
         w, h, rr = process_resolution['width'], process_resolution['height'], process_resolution['refresh_rate']
